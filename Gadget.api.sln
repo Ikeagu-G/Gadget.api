@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gadget.api", "Gadget.api.csproj", "{F2AAD3FD-43C8-49F5-94A3-CBCECA5E6E4E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F2AAD3FD-43C8-49F5-94A3-CBCECA5E6E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2AAD3FD-43C8-49F5-94A3-CBCECA5E6E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2AAD3FD-43C8-49F5-94A3-CBCECA5E6E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2AAD3FD-43C8-49F5-94A3-CBCECA5E6E4E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E7340069-320B-4B84-9857-1641A3EB0318}
+	EndGlobalSection
+EndGlobal
