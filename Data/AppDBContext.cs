@@ -11,6 +11,6 @@ namespace Gadget.api.Data
         }
 
         public DbSet<Gadgets> Gadgets { get; set; }
-            
+
     }
 }

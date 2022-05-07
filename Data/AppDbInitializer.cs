@@ -5,16 +5,42 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Gadget.api.Data
 {
-    public class AppDbInitializer
-    {
-        public static void Seed(IApplicationBuilder applicationBuilder)
-        {
-            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
-            {
-                var context=serviceScope.ServiceProvider.GetService<AppDBContext>();
 
+   public static class AppDbInitializer
+   {
+        public static void Configure(this IApplicationBuilder app)
+        {
+    
+            Console.WriteLine("Attempting to apply migration----");
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var services = scope.ServiceProvider;  //This line does the magic after several troubleshooting
+                try
+                {
+                    var context = services.GetRequiredService<AppDBContext>();
+                    //context.Database.EnsureCreated();  //Uncomment to do auto migrate with dotnet run. otherwise run add migration and Update db
+                    AppDbInitializer.SeedData(context);
+
+                }
+                catch(Exception ex)
+                {
+                var log = services.GetRequiredService<ILogger<AppDBContext>>();
+                log.LogError(ex,"Error while attempting DB migrations.");
+                }
+            }
+
+        }
+
+
+        private static void SeedData(AppDBContext context)
+        {
+
+            Console.WriteLine("Applying migration----");
+            try
+            {
                 if (!context.Gadgets.Any())
                 {
+                    Console.WriteLine("---Seeding Data...");
                     context.Gadgets.AddRange(new Gadgets()
                     {
                         Name = "Tecno Pop 3",
@@ -30,9 +56,20 @@ namespace Gadget.api.Data
                         Brand = "Infinix",
                         CreatedDate = DateTime.Now
                     });
+
                     context.SaveChanges();
                 }
+                else
+                {
+                    Console.WriteLine("---Already have Data");
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"--->Could not apply migration:{ex.Message}");
+            }
+            
         }
-    }
+   }
+    
 }
