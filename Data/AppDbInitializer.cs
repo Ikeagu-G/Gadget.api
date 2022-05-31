@@ -18,8 +18,9 @@ namespace Gadget.api.Data
                 try
                 {
                     var context = services.GetRequiredService<AppDBContext>();
-                    //context.Database.EnsureCreated();  //Uncomment to do auto migrate with dotnet run. otherwise run add migration and Update db
+                    context.Database.EnsureCreated();  //Uncomment to do auto migrate with dotnet run. otherwise run add migration and Update db
                     AppDbInitializer.SeedData(context);
+                    
 
                 }
                 catch(Exception ex)
