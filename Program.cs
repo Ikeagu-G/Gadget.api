@@ -3,6 +3,9 @@ using Gadget.api.Data;
 using Gadget.api.Repository;
 using Gadget.api.Data.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,25 @@ builder.Services.AddScoped<IGadgetRepo, GadgetRepo>();
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                             .AddEntityFrameworkStores<AppDBContext>()
                                 .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+ .AddJwtBearer(option =>
+ {
+     option.RequireHttpsMetadata = false;
+     option.SaveToken = true;
+     option.TokenValidationParameters = new TokenValidationParameters
+     {
+         ValidateIssuer = true,
+         ValidateAudience = true,
+         ValidateLifetime = true,
+         ValidateIssuerSigningKey = true,
+         ValidIssuer = builder.Configuration["JwtSetting: Issuer"],
+         ValidAudience = builder.Configuration["JwtSetting: Audience"],
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSetting: Secretkey"])),
+         ClockSkew = TimeSpan.Zero
+
+     };
+ });
 
 //builder.Services.AddScoped<IHttpService, HttpService>();
 
