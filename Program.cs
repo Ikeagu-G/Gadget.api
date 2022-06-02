@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Gadget.api.Data;
 using Gadget.api.Repository;
-using Gadget.api.Integration.Implementation;
-
+using Gadget.api.Data.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +12,21 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDBContext>(u => u.UseSqlServer(connectionString));
 builder.Services.AddControllers();
 builder.Services.AddScoped<IGadgetRepo, GadgetRepo>();
+
+//Adding identity service
+var sp = builder.Services.BuildServiceProvider();
+using(var scope = sp.CreateScope())
+{
+    var existingUserManager = scope.ServiceProvider
+        .GetService<UserManager<ApplicationUser>>();
+        if(existingUserManager == null)
+        {
+            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+                            .AddEntityFrameworkStores<AppDBContext>()
+                                .AddDefaultTokenProviders();
+        }
+}
+
 //builder.Services.AddScoped<IHttpService, HttpService>();
 
 
@@ -21,7 +36,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-AppDbInitializer.Configure(app);
+AppDbInitializer.ConfigureIdentity(app);
 
 
 //Configure the HTTP request pipeline.

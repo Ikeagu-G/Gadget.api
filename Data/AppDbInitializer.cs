@@ -1,14 +1,15 @@
-﻿using Gadget.api.Data;
+﻿using System.Security.Claims;
+using Gadget.api.Data.Helper;
 using Gadget.api.Data.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+using Gadget.api.ENUM;
+using Microsoft.AspNetCore.Identity;
 
 namespace Gadget.api.Data
 {
 
    public static class AppDbInitializer
    {
-        public static void Configure(this IApplicationBuilder app)
+        public static void ConfigureIdentity(this IApplicationBuilder app)
         {
     
             Console.WriteLine("Attempting to apply migration----");
@@ -18,8 +19,10 @@ namespace Gadget.api.Data
                 try
                 {
                     var context = services.GetRequiredService<AppDBContext>();
+                    var userManager = services.GetService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetService<RoleManager<ApplicationRole>>();
                     context.Database.EnsureCreated();  //Uncomment to do auto migrate with dotnet run. otherwise run add migration and Update db
-                    AppDbInitializer.SeedData(context);
+                    AppDbInitializer.SeedData(userManager, roleManager, context);
                     
 
                 }
@@ -33,8 +36,10 @@ namespace Gadget.api.Data
         }
 
 
-        private static void SeedData(AppDBContext context)
+        public static void SeedData(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, AppDBContext context)
         {
+            SeedRoles(roleManager);
+            SeedUsers(userManager);
 
             Console.WriteLine("Applying migration----");
             try
@@ -71,6 +76,54 @@ namespace Gadget.api.Data
             }
             
         }
+
+
+        private static void SeedUsers(UserManager<ApplicationUser> userManager)
+        {
+            ApplicationUser user = new ApplicationUser()
+            {
+                UserName = "SuperAdministrator",
+                LastName = "Super",
+                FirstName = "Super",
+                MiddleName = "Admin",
+                Status = Status.Active,
+                Email = "SuperAdmin@gmail.com",
+                EmailConfirmed = true,
+                CreatedBy ="System",
+                CreatedById = "::2",
+                DateCreated = DateTime.Now,
+
+            };
+
+            IdentityResult result = userManager.CreateAsync(user, "PassWord2@").Result;
+            if(result.Succeeded)
+            {
+                userManager.AddToRoleAsync(user, "SuperAdmin");
+            }
+        }
+
+        private static void SeedRoles(RoleManager<ApplicationRole> roleManager)
+        {
+            if(!roleManager.RoleExistsAsync("SuperAdmin").Result)
+            {
+                ApplicationRole role = new ApplicationRole
+                {
+                    Name = "SuperAdmin",
+                    Description = "To do administrative operation",
+                    CreatedBy = "System",
+                    Status = Status.Active,
+                    DateCreated = DateTime.Now,
+                };
+                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+                if(roleResult.Succeeded)
+                {
+                    var result = roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Access, "SuperAdmin")).Result;
+                }
+            }
+
+        }
+
+
    }
     
 }
