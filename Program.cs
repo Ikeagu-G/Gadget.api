@@ -14,18 +14,9 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IGadgetRepo, GadgetRepo>();
 
 //Adding identity service
-var sp = builder.Services.BuildServiceProvider();
-using(var scope = sp.CreateScope())
-{
-    var existingUserManager = scope.ServiceProvider
-        .GetService<UserManager<ApplicationUser>>();
-        if(existingUserManager == null)
-        {
-            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                             .AddEntityFrameworkStores<AppDBContext>()
                                 .AddDefaultTokenProviders();
-        }
-}
 
 //builder.Services.AddScoped<IHttpService, HttpService>();
 

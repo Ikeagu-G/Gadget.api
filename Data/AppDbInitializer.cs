@@ -21,8 +21,10 @@ namespace Gadget.api.Data
                     var context = services.GetRequiredService<AppDBContext>();
                     var userManager = services.GetService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetService<RoleManager<ApplicationRole>>();
-                    context.Database.EnsureCreated();  //Uncomment to do auto migrate with dotnet run. otherwise run add migration and Update db
+                     //Uncomment to do auto migrate with dotnet run. otherwise run add migration and Update db
+                    context.Database.EnsureCreated();
                     AppDbInitializer.SeedData(userManager, roleManager, context);
+                    
                     
 
                 }
@@ -38,10 +40,8 @@ namespace Gadget.api.Data
 
         public static void SeedData(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, AppDBContext context)
         {
-            SeedRoles(roleManager);
-            SeedUsers(userManager);
-
             Console.WriteLine("Applying migration----");
+
             try
             {
                 if (!context.Gadgets.Any())
@@ -63,7 +63,9 @@ namespace Gadget.api.Data
                         CreatedDate = DateTime.Now
                     });
 
-                    context.SaveChanges();
+                    SeedRoles(roleManager);
+                    SeedUsers(userManager);
+                     //context.SaveChanges();
                 }
                 else
                 {
