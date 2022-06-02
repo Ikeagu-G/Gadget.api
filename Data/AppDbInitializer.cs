@@ -119,7 +119,7 @@ namespace Gadget.api.Data
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
                 if(roleResult.Succeeded)
                 {
-                    var result = roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Access, "SuperAdmin")).Result;
+                    var result = roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.SuperAdmin, "SuperAdmin")).Result;
                 }
             }
 
