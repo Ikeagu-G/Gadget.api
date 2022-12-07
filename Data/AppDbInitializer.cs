@@ -22,7 +22,7 @@ namespace Gadget.api.Data
                     var userManager = services.GetService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetService<RoleManager<ApplicationRole>>();
                      //Uncomment to do auto migrate with dotnet run. otherwise run add migration and Update db
-                    context.Database.EnsureCreated();
+                    //context.Database.EnsureCreated();
                     AppDbInitializer.SeedData(userManager, roleManager, context);
                     
                     
@@ -120,6 +120,23 @@ namespace Gadget.api.Data
                 if(roleResult.Succeeded)
                 {
                     var result = roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.SuperAdmin, "SuperAdmin")).Result;
+                }
+            }
+
+            if(!roleManager.RoleExistsAsync("User").Result)
+            {
+                ApplicationRole role = new ApplicationRole
+                {
+                    Name = "User",
+                    Description = "To do operational role",
+                    CreatedBy = "System",
+                    Status = Status.Active,
+                    DateCreated = DateTime.Now,
+                };
+                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+                if(roleResult.Succeeded)
+                {
+                    var result = roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.User, "User")).Result;
                 }
             }
 
