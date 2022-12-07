@@ -5,4 +5,10 @@ namespace Gadget.api.ENUM
         Active = 1,
         InActive 
     }
+
+    public enum UserType
+    {
+        User = 1,
+        Admin 
+    }
 }
