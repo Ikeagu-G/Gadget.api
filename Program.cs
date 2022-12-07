@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AutoMapper;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDBContext>(u => u.UseSqlServer(connectionString));
 builder.Services.AddControllers();
 builder.Services.AddScoped<IGadgetRepo, GadgetRepo>();
+builder.Services.AddScoped<IGadgetUserRepo, GadgetUserRepo>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //Adding identity service
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
